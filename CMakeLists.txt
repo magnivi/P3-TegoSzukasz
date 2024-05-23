@@ -1,15 +1,25 @@
-cmake_minimum_required(VERSION 3.4...3.18)
-project(cmake_example)
+﻿# CMakeList.txt : CMake project for CMakeProject12, include source and define
+# project specific logic here.
+#
+cmake_minimum_required (VERSION 3.8)
 
-add_subdirectory(pybind11)
-add_subdirectory(matplotplusplus)
-pybind11_add_module(cmake_example src/main.cpp)
-target_link_libraries(cmake_example PUBLIC matplot)
+# Enable Hot Reload for MSVC compilers if supported.
+if (POLICY CMP0141)
+  cmake_policy(SET CMP0141 NEW)
+  set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<IF:$<AND:$<C_COMPILER_ID:MSVC>,$<CXX_COMPILER_ID:MSVC>>,$<$<CONFIG:Debug,RelWithDebInfo>:EditAndContinue>,$<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>>")
+endif()
+
+project ("OpenCVExample")
+find_package(OpenCV REQUIRED)
+include_directories(${OpenCV_INCLUDE_DIRS})
+
+# Add source to this project's executable.
+add_executable (OpenCVExample "CMakeProject12.cpp" "CMakeProject12.h" "Advanced.cpp")
+target_link_libraries(OpenCVExample ${OpenCV_LIBS})
 
 
+if (CMAKE_VERSION VERSION_GREATER 3.12)
+  set_property(TARGET OpenCVExample PROPERTY CXX_STANDARD 20)
+endif()
 
-
-# EXAMPLE_VERSION_INFO is defined by setup.py and passed into the C++ code as a
-# define (VERSION_INFO) here.
-target_compile_definitions(cmake_example
-                           PRIVATE VERSION_INFO=${EXAMPLE_VERSION_INFO})
+# TODO: Add tests and install targets if needed.
